@@ -1,0 +1,10 @@
+[ITSC]
+account = 
+password = 
+
+[lecture]
+url = 
+
+[local]
+save_dir = ./
+threads = 10
