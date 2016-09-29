@@ -40,7 +40,7 @@ There are some options you can configure.
 
 ## Test OS
 
-Windows 10 64-bit
+Windows 10 64-bit & Linux Mint 18 x86_64
 
 Python 2.7.12
 

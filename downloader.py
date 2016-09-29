@@ -15,7 +15,7 @@ cf.read("config")
 account = cf.get("ITSC", "account")
 pwd = cf.get("ITSC", "password")
 url = cf.get("lecture", "url")
-save_dir = cf.get("local", "save_dir")
+save_dir = cf.get("local", "save_dir") + '/'
 threads = cf.getint("local", "threads")
 
 system = platform.system()
@@ -97,6 +97,7 @@ def GetVideo(Videolist):
     if not os.path.exists(save_dir):
         os.mkdir(save_dir)
     VideoName = []
+    # for i in xrange(5):  # just for test
     for i in xrange(len(Videolist)):
         print 'Downloading the video %d...' % (GetCurrentFileIdx(Videolist[i]))
         r = urllib.urlopen(Videolist[i]).read()
@@ -115,9 +116,9 @@ def MergeTS(VideoName, dir):
             cmd = 'copy /b %s+%s %s' % (VideoName[0], VideoName[i], VideoName[0])
             os.system(cmd)
             os.remove(VideoName[i])
-    elif system is 'Linux':
+    elif 'Linux' in system:
         for i in xrange(1, num):
-            cmd = 'cat %s %s > %s' % (VideoName[0], VideoName[i], VideoName[0])
+            cmd = 'cat %s >> %s' % (VideoName[i], VideoName[0])
             os.system(cmd)
             os.remove(VideoName[i])
     else:
