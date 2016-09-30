@@ -17,16 +17,24 @@ pwd = cf.get("ITSC", "password")
 url = cf.get("lecture", "url")
 save_dir = cf.get("local", "save_dir") + '/'
 threads = cf.getint("local", "threads")
+browser = cf.get("local", "browser")
 
 system = platform.system()
+
+print browser
 
 
 def GetRVC():
     '''log in the rvc.ust.hk and get the PlaylistUrl url'''
     print 'Opening the browser......'
 
-    sel = webdriver.Firefox()
-
+    # config the browser
+    if "Firefox" in browser:
+        sel = webdriver.Firefox()
+    elif "PhantomJS" in browser:
+        sel = webdriver.PhantomJS()
+    else:
+        print 'I donnot know the browser!'
     # open the login in page
     sel.get(url)
     time.sleep(5)
@@ -56,15 +64,18 @@ def GetRVC():
     # get the play list url
     source = sel.page_source.encode('ascii', 'ignore')
     try:
-        rtsp_idx = source.index('rtsp')
+        rtsp_idx = source.index('rvcprotected')
         sour = source[rtsp_idx:]
         idx = sour.index('http')
         i = idx
         while sour[i] is not "'":
             i += 1
         PlaylistUrl_0 = sour[idx:i]
-        amp_idx = PlaylistUrl_0.index('amp')
-        PlaylistUrl = PlaylistUrl_0[:amp_idx] + PlaylistUrl_0[amp_idx+4:]
+        try:
+            amp_idx = PlaylistUrl_0.index('amp')
+            PlaylistUrl = PlaylistUrl_0[:amp_idx] + PlaylistUrl_0[amp_idx+4:]
+        except:
+            PlaylistUrl = PlaylistUrl_0
         print 'Get playlist url:', PlaylistUrl
     except:
         print 'Cannot find playlist source!'
@@ -171,3 +182,4 @@ if __name__ == '__main__':
 
     # merge the videos downloaded into one file
     MergeTS(VideoName, save_dir)
+    os.remove("ghostdriver.log")

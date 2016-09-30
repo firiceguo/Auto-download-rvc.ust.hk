@@ -8,3 +8,4 @@ url =
 [local]
 save_dir = ./
 threads = 10
+browser = PhantomJS
