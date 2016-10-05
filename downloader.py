@@ -127,13 +127,16 @@ def MergeTS(VideoName, dir):
             cmd = 'copy /b %s+%s %s' % (VideoName[0], VideoName[i], VideoName[0])
             os.system(cmd)
             os.remove(VideoName[i])
-    elif 'Linux' in system:
-        for i in xrange(1, num):
-            cmd = 'cat %s >> %s' % (VideoName[i], VideoName[0])
-            os.system(cmd)
-            os.remove(VideoName[i])
     else:
-        print 'Sorry, it seems that I donnot know how to merge .ts file in your system.'
+        for i in xrange(1, num):
+            try:
+                cmd = 'cat %s >> %s' % (VideoName[i], VideoName[0])
+                os.system(cmd)
+                os.remove(VideoName[i])
+            except:
+                if i == 1:
+                    print 'Sorry, it seems that I donnot know how to merge .ts file in your system.'
+                    break
     os.chdir('../')
 
 
