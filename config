@@ -6,6 +6,6 @@ password =
 url = 
 
 [local]
-save_dir = ./
+save_dir = ./video
 threads = 10
 browser = PhantomJS

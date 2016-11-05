@@ -41,21 +41,24 @@ def GetRVC():
 
     # sign in the username
     try:
-        sel.find_element_by_name("UsernameField").send_keys(account)
+        # sel.find_element_by_name("UsernameField").send_keys(account)
+        sel.find_element_by_id("username").send_keys(account)
         print 'user success!'
     except:
         print 'user error!'
     time.sleep(1)
     # sign in the pasword
     try:
-        sel.find_element_by_name("PasswordField").send_keys(pwd)
+        # sel.find_element_by_name("PasswordField").send_keys(pwd)
+        sel.find_element_by_id("password").send_keys(pwd)
         print 'pw success!'
     except:
         print 'pw error!'
     time.sleep(1)
     # click to login
     try:
-        sel.find_element_by_name("EnterButton").click()
+        # sel.find_element_by_name("EnterButton").click()
+        sel.find_element_by_name("submit").click()
         print 'click success!'
     except:
         print 'click error!'
@@ -141,8 +144,14 @@ def MergeTS(VideoName, dir):
 
 
 def GetCurrentFileIdx(VideoUrl):
-    ts = VideoUrl.split('.')[-2]
-    idx = int(ts.split('_')[-1])
+    try:
+        ts = VideoUrl.split('.')[-2]
+    except:
+        pass
+    try:
+        idx = int(ts.split('_')[-1])
+    except:
+        pass
     return(idx)
 
 if __name__ == '__main__':
@@ -185,4 +194,7 @@ if __name__ == '__main__':
 
     # merge the videos downloaded into one file
     MergeTS(VideoName, save_dir)
-    os.remove("ghostdriver.log")
+    try:
+        os.remove("ghostdriver.log")
+    except:
+        pass
