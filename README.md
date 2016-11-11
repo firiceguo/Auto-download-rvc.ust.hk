@@ -12,6 +12,8 @@ Of course, you have to provide
 
 in the config file.
 
+You can see more details [here](http://firiceguo.xyz/web/python/2016/09/29/downloader-rvc/)(Chinese).
+
 ## You are welcome to ...
 
 - give me pull requests and become a countributor of this project
