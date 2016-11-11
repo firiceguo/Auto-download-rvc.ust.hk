@@ -48,6 +48,8 @@ Python 2.7.12
 
 selenium 2.52.0
 
+Note: Selenium 3.x use the geckodriver, so if you are using the version 3, there will be an error:`WebDriverException:Message:'geckodriver'executable needs to be in Path`, and [here](http://blog.163.com/tracy_ly_8/blog/static/263060033201691931046880/) is the solution.
+
 Firefox 46.0.1 & [PhantomJS](http://phantomjs.org/)
 
 Note: Because there still exist [bugs](https://github.com/SeleniumHQ/selenium/issues/2645) for Firefox 47 and above version, please use [Firefox 46.0.1](https://ftp.mozilla.org/pub/firefox/releases/46.0.1/) and colse the auto update in the `about:config` to avoid the bug.
