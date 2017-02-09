@@ -10,6 +10,8 @@ In `downloader.py`:
 
 - Phantomjs: 2.1.1-4
 
+For the Windows user, you can still use the `downloader-v2.py`.
+
 ## About this project
 
 This project aim to download the lecture videos @rvc.ust.hk.
