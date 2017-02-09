@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import ConfigParser
+import configparser
 from selenium import webdriver
 import time
 import requests
@@ -10,7 +10,7 @@ import platform
 import threading
 
 # load config file
-cf = ConfigParser.ConfigParser()
+cf = configparser.ConfigParser()
 cf.read("config")
 account = cf.get("ITSC", "account")
 pwd = cf.get("ITSC", "password")
@@ -21,12 +21,12 @@ browser = cf.get("local", "browser")
 
 system = platform.system()
 
-print browser
+print(browser)
 
 
 def GetRVC():
     '''log in the rvc.ust.hk and get the PlaylistUrl url'''
-    print 'Opening the browser......'
+    print('Opening the browser......')
 
     # config the browser
     if "Firefox" in browser:
@@ -34,7 +34,7 @@ def GetRVC():
     elif "PhantomJS" in browser:
         sel = webdriver.PhantomJS()
     else:
-        print 'I donnot know the browser!'
+        print('I donnot know the browser!')
     # open the login in page
     sel.get(url)
     time.sleep(5)
@@ -43,29 +43,29 @@ def GetRVC():
     try:
         # sel.find_element_by_name("UsernameField").send_keys(account)
         sel.find_element_by_id("username").send_keys(account)
-        print 'user success!'
+        print('user success!')
     except:
-        print 'user error!'
+        print('user error!')
     time.sleep(1)
     # sign in the pasword
     try:
         # sel.find_element_by_name("PasswordField").send_keys(pwd)
         sel.find_element_by_id("password").send_keys(pwd)
-        print 'pw success!'
+        print('pw success!')
     except:
-        print 'pw error!'
+        print('pw error!')
     time.sleep(1)
     # click to login
     try:
         # sel.find_element_by_name("EnterButton").click()
         sel.find_element_by_name("submit").click()
-        print 'click success!'
+        print('click success!')
     except:
-        print 'click error!'
+        print('click error!')
     time.sleep(3)
 
     # get the play list url
-    source = sel.page_source.encode('ascii', 'ignore')
+    source = sel.page_source
     try:
         rtsp_idx = source.index('rvcprotected')
         sour = source[rtsp_idx:]
@@ -79,21 +79,22 @@ def GetRVC():
             PlaylistUrl = PlaylistUrl_0[:amp_idx] + PlaylistUrl_0[amp_idx+4:]
         except:
             PlaylistUrl = PlaylistUrl_0
-        print 'Get playlist url:', PlaylistUrl
+        print('Get playlist url:', PlaylistUrl)
     except:
-        print 'Cannot find playlist source!'
+        PlaylistUrl = ''
+        print('Cannot find playlist source!')
 
     sel.close()
     return(PlaylistUrl)
 
 
 def GetVideoList(PlaylistUrl):
-    r = requests.get(PlaylistUrl).text.encode('ascii', 'ignore')
+    r = requests.get(PlaylistUrl).text
     Chunklist_idx = r.index('chunk')
     ChunklistUrl = PlaylistUrl[:PlaylistUrl.index('playlist')] + r[Chunklist_idx:]
-    print 'Get chunk list url:', ChunklistUrl
+    print('Get chunk list url:', ChunklistUrl)
 
-    Chunklist = requests.get(ChunklistUrl).text.encode('ascii', 'ignore')
+    Chunklist = requests.get(ChunklistUrl).text
     Videolist = []
     while 'media' in Chunklist:
         idx = Chunklist.index('media')
@@ -102,8 +103,8 @@ def GetVideoList(PlaylistUrl):
             i += 1
         Videolist.append(PlaylistUrl[:PlaylistUrl.index('playlist')] + Chunklist[idx:i-1])
         Chunklist = Chunklist[i:]
-    print 'Get video list success!'
-    print 'There are %d chunks' % (len(Videolist))
+    print('Get video list success!')
+    print('There are %d chunks' % (len(Videolist)))
     return(Videolist)
 
 
@@ -112,10 +113,13 @@ def GetVideo(Videolist):
         os.mkdir(save_dir)
     VideoName = []
     # for i in xrange(5):  # just for test
-    for i in xrange(len(Videolist)):
-        print 'Downloading the video %d...' % (GetCurrentFileIdx(Videolist[i]))
-        r = urllib.urlopen(Videolist[i]).read()
-        filename = save_dir + str(GetCurrentFileIdx(Videolist[i])) + '.ts'
+    for i in range(len(Videolist)):
+        idx = GetCurrentFileIdx(Videolist[i])
+        if idx == -1:
+            break
+        print('Downloading the video %d...' % (idx))
+        r = urllib.request.urlopen(Videolist[i]).read()
+        filename = save_dir + str(idx) + '.ts'
         VideoName.append(str(i) + '.ts')
         with open(filename, 'wb') as f:
             f.write(r)
@@ -124,21 +128,21 @@ def GetVideo(Videolist):
 def MergeTS(VideoName, dir):
     num = len(VideoName)
     os.chdir(dir)
-    print 'Merging videos ......'
+    print('Merging videos ......')
     if system is 'Windows':
-        for i in xrange(1, num):
+        for i in range(1, num):
             cmd = 'copy /b %s+%s %s' % (VideoName[0], VideoName[i], VideoName[0])
             os.system(cmd)
             os.remove(VideoName[i])
     else:
-        for i in xrange(1, num):
+        for i in range(1, num):
             try:
                 cmd = 'cat %s >> %s' % (VideoName[i], VideoName[0])
                 os.system(cmd)
                 os.remove(VideoName[i])
             except:
                 if i == 1:
-                    print 'Sorry, it seems that I donnot know how to merge .ts file in your system.'
+                    print('Sorry, it seems that I donnot know how to merge .ts file in your system.')
                     break
     os.chdir('../')
 
@@ -151,45 +155,48 @@ def GetCurrentFileIdx(VideoUrl):
     try:
         idx = int(ts.split('_')[-1])
     except:
+        idx = -1
         pass
     return(idx)
 
 if __name__ == '__main__':
     PlaylistUrl = GetRVC()
+    if PlaylistUrl == '':
+        exit(0)
     Videolist = GetVideoList(PlaylistUrl)
 
     # assign each threads' workload
     if threads > len(Videolist):
         threads = len(Videolist)
-    num = len(Videolist) / threads
+    num = len(Videolist) // threads
     mod = len(Videolist) % threads
     thrVideolist = [[]]*threads
     x = 0
-    for i in xrange(threads):
+    for i in range(threads):
         thrVideolist[i] = Videolist[x:x+num]
         x += num
         if i < mod:
             thrVideolist[i].append(Videolist[x:x+1])
             x += 1
-    print thrVideolist
+    print(thrVideolist)
 
     # establish threads
     thr = []
-    for i in xrange(threads):
+    for i in range(threads):
         t = threading.Thread(target=GetVideo, args=(thrVideolist[i],))
         thr.append(t)
         t.start()
 
     # wait every threads to complete tasks
-    for i in xrange(threads):
+    for i in range(threads):
         thr[i].join()
 
     # sort the VideoName according to the number not the ascii code
     VideoName = os.listdir(save_dir)
-    for i in xrange(len(VideoName)):
+    for i in range(len(VideoName)):
         VideoName[i] = int(VideoName[i].split('.')[0])
     VideoName = sorted(VideoName)
-    for i in xrange(len(VideoName)):
+    for i in range(len(VideoName)):
         VideoName[i] = str(VideoName[i])+'.ts'
 
     # merge the videos downloaded into one file

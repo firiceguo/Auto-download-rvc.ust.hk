@@ -1,3 +1,15 @@
+## Update 2017/2/9
+
+All of the softwares are up-to-date. (It indecates that you can use pip to install the selenium instead of downloading the package.)
+
+In `downloader.py`:
+
+- Python: **Python 3.6.0** (default, Jan 16 2017, 12:12:55) [GCC 6.3.1 20170109] on linux
+
+- Selenium: 3.0.2
+
+- Phantomjs: 2.1.1-4
+
 ## About this project
 
 This project aim to download the lecture videos @rvc.ust.hk.
@@ -6,9 +18,11 @@ Of course, you have to provide
 
 - your ITSC account name
 
-- password 
+- password
 
 - the lecture URL
+
+- the browser can be ``PhantomJS``(recommended) or ``Firefox``
 
 in the config file.
 
@@ -38,20 +52,26 @@ There are some options you can configure.
 
 - [selenium](https://github.com/SeleniumHQ/selenium)
 
+- configparser
+
 - requests
+
+- urllib
 
 ## Test OS
 
-Windows 10 64-bit & Linux Mint 18 x86_64
+Windows 10 64-bit & Linux x86_64
 
-Python 2.7.12
+Python ~~2.7.12~~ 3.6.0
 
-selenium 2.52.0
+selenium ~~2.52.0~~ 3.0.2
 
-Note: Selenium 3.x use the geckodriver, so if you are using the version 3, there will be an error:`WebDriverException:Message:'geckodriver'executable needs to be in Path`, and [here](http://blog.163.com/tracy_ly_8/blog/static/263060033201691931046880/) is the solution.
+PhantomJS 2.1.1-4
+
+## Common Questions
+
+In windows system, Selenium 3.x use the geckodriver, so if you are using the version 3, there will be an error:`WebDriverException:Message:'geckodriver'executable needs to be in Path`, and [here](http://blog.163.com/tracy_ly_8/blog/static/263060033201691931046880/) is the solution.
 
 Firefox 46.0.1 & [PhantomJS](http://phantomjs.org/)
 
-Note: Because there still exist [bugs](https://github.com/SeleniumHQ/selenium/issues/2645) for Firefox 47 and above version, please use [Firefox 46.0.1](https://ftp.mozilla.org/pub/firefox/releases/46.0.1/) and colse the auto update in the `about:config` to avoid the bug.
-
-
+Because there still exist [bugs](https://github.com/SeleniumHQ/selenium/issues/2645) for Firefox 47 and above version, please use [Firefox 46.0.1](https://ftp.mozilla.org/pub/firefox/releases/46.0.1/) and colse the auto update in the `about:config` to avoid the bug.
