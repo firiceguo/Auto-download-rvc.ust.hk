@@ -1,6 +1,6 @@
 ## Update 2017/2/9
 
-All of the softwares are up-to-date. (It indecates that you can use pip to install the selenium instead of downloading the package.)
+All of the softwares are up-to-date. (It indecates that you can use pip or pip3 for Python 3 to install the selenium instead of downloading the package.)
 
 In `downloader.py`:
 
